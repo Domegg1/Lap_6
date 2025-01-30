@@ -1,0 +1,38 @@
+version: '3.9'
+services:
+  db:
+    image: mysql:latest
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: 321341
+      MYSQL_DATABASE: students 
+    ports: 
+      - "3307:3306" 
+    volumes: 
+      - /data:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: db 
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: 321341 
+    ports:
+      - "8080:80"
+    depends_on: 
+     - db
+
+  php-apache-environment:
+    container_name: php-apache
+    build: .
+    volumes: 
+      - ./php/src:/var/www/html/
+    ports:
+      - 8000:80
+    depends_on:
+      - db
+
+volumes:
+  mysql_data_test: 
+    driver: local
